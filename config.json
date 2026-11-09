@@ -1,0 +1,14 @@
+{
+  "welcomeChannelId": "1561350729875067054",
+  "rulesChannelId": "1561351213428252782",
+  "rolesChannelId": "1561351770461179927",
+  "autoRoleId": "1569376728013348964",
+  "euRoleId": "1561858108286836906",
+  "ticketCategoryId": "1561350687160533102",
+  "supportDeskChannelId": "1561350984884682806",
+  "supportGuideChannelId": "1561351453132591106",
+  "supportTriageChannelId": "1561351725145784490",
+  "ticketRoleId": "1561826282444947517",
+  "boosterRoleId": "1561857458920628264",
+  "discordBoosterRoleId": "1569152811806232688"
+}
