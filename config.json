@@ -10,5 +10,7 @@
   "supportTriageChannelId": "1561351725145784490",
   "ticketRoleId": "1561826282444947517",
   "boosterRoleId": "1561857458920628264",
-  "discordBoosterRoleId": "1569152811806232688"
+  "discordBoosterRoleId": "1569152811806232688",
+  "voiceCategoryId": "1569426287561285642",
+  "joinToCreateChannelId": "1569447343584190466"
 }
