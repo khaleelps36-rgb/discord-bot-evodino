@@ -176,8 +176,8 @@ function createWelcomePayload(member, inviter = null, inviteUses = null) {
     .setDescription(
       `Hey ${member}, welcome to **${member.guild.name}**! 👋\n\n` +
       `📜 **Server Rules:** Don't forget to read the rules in <#${rulesChannelId}>!\n` +
-      `🎭 **Get Roles:** Pick your custom roles in <#${rolesChannelId}>!\n` +
-      `💬 **Chat:** Introduce yourself and say hi in <#1561350969307041976>!\n\n` +
+      `🎭 **Choose Your Language & Roles:** Pick your regional language channels in <#${rolesChannelId}>!\n` +
+      `💬 **Global Chat:** Say hello and introduce yourself in <#1561350969307041976>!\n\n` +
       `*We're thrilled to have you here. Enjoy your stay and have fun!* ✨`
     )
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
@@ -279,6 +279,83 @@ function createRolesPanel(guild) {
   );
 
   return { embeds: [embed], components: [row] };
+}
+
+// International Language Selection Panel Generator
+function createLanguagesPanel(guild) {
+  const langConfigPath = path.join(__dirname, 'languages_config.json');
+  let langConfig = { channels: {} };
+  try {
+    langConfig = JSON.parse(fs.readFileSync(langConfigPath, 'utf8'));
+  } catch {}
+
+  const embed = new EmbedBuilder()
+    .setColor('#00FFE0')
+    .setTitle('🌐 CHOOSE YOUR LANGUAGES • اختر لغتك')
+    .setDescription(
+      `Welcome to **${guild.name} International Community**! 🦖\n\n` +
+      `Select your spoken languages below to unlock private regional discussion channels.\n` +
+      `Click a button to **add or remove** that language channel instantly.\n\n` +
+      `🇸🇦 **العربية (Arabic)** → ${langConfig.channels?.ar ? `<#${langConfig.channels.ar}>` : '#arabic-chat'}\n` +
+      `🇪🇸 **Español (Spanish)** → ${langConfig.channels?.es ? `<#${langConfig.channels.es}>` : '#spanish-chat'}\n` +
+      `🇫🇷 **Français (French)** → ${langConfig.channels?.fr ? `<#${langConfig.channels.fr}>` : '#french-chat'}\n` +
+      `🇩🇪 **Deutsch (German)** → ${langConfig.channels?.de ? `<#${langConfig.channels.de}>` : '#german-chat'}\n` +
+      `🇷🇺 **Русский (Russian)** → ${langConfig.channels?.ru ? `<#${langConfig.channels.ru}>` : '#russian-chat'}\n` +
+      `🇵🇱 **Polski (Polish)** → ${langConfig.channels?.pl ? `<#${langConfig.channels.pl}>` : '#polish-chat'}\n` +
+      `🇧🇷 **Português (Brazilian)** → ${langConfig.channels?.br ? `<#${langConfig.channels.br}>` : '#brazil-chat'}\n` +
+      `🇹🇷 **Türkçe (Turkish)** → ${langConfig.channels?.tr ? `<#${langConfig.channels.tr}>` : '#turkish-chat'}\n\n` +
+      `💬 *Global Chat (<#1561350969307041976>) remains accessible to everyone.*`
+    )
+    .setFooter({ text: 'EvoDino Role Selector • Click any button to toggle' })
+    .setTimestamp();
+
+  const row1 = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('lang_ar').setLabel('Arabic').setEmoji('🇸🇦').setStyle(ButtonStyle.Primary),
+    new ButtonBuilder().setCustomId('lang_es').setLabel('Spanish').setEmoji('🇪🇸').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('lang_fr').setLabel('French').setEmoji('🇫🇷').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('lang_de').setLabel('German').setEmoji('🇩🇪').setStyle(ButtonStyle.Secondary)
+  );
+
+  const row2 = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('lang_ru').setLabel('Russian').setEmoji('🇷🇺').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('lang_pl').setLabel('Polish').setEmoji('🇵🇱').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('lang_br').setLabel('Brazil').setEmoji('🇧🇷').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('lang_tr').setLabel('Turkish').setEmoji('🇹🇷').setStyle(ButtonStyle.Secondary)
+  );
+
+  return { embeds: [embed], components: [row1, row2] };
+}
+
+// Dynamic Voice Room Controls Panel Generator
+function createVoiceControlPanel(member) {
+  const embed = new EmbedBuilder()
+    .setColor('#00FFE0')
+    .setTitle('🔊 VOICE ROOM CONTROLS • لوحة تحكم الروم')
+    .setDescription(
+      `Welcome to your private room, ${member}! 👋\n\n` +
+      `**Manage your room using the buttons below:**\n` +
+      `🔒 **Lock / Unlock:** Control who can join your room.\n` +
+      `👥 **Player Slots:** Limit room to 2, 4, 6 players, or Unlimited.\n` +
+      `✏️ **Rename:** Set a custom room name.\n\n` +
+      `*When everyone leaves, this room will be deleted automatically.*`
+    )
+    .setFooter({ text: 'EvoDino Dynamic Voice System' })
+    .setTimestamp();
+
+  const row1 = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('vcontrol_lock').setLabel('Lock').setEmoji('🔒').setStyle(ButtonStyle.Danger),
+    new ButtonBuilder().setCustomId('vcontrol_unlock').setLabel('Unlock').setEmoji('🔓').setStyle(ButtonStyle.Success),
+    new ButtonBuilder().setCustomId('vcontrol_rename').setLabel('Rename').setEmoji('✏️').setStyle(ButtonStyle.Primary)
+  );
+
+  const row2 = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('vcontrol_limit_2').setLabel('Duo (2)').setEmoji('👥').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('vcontrol_limit_4').setLabel('Squad (4)').setEmoji('👥').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('vcontrol_limit_6').setLabel('Six (6)').setEmoji('👥').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('vcontrol_limit_0').setLabel('Unlimited').setEmoji('♾️').setStyle(ButtonStyle.Secondary)
+  );
+
+  return { embeds: [embed], components: [row1, row2] };
 }
 
 // Support Desk Ticket Panel Generator (Main Channel 1561350984884682806)
@@ -406,6 +483,7 @@ function initBot(withMembersIntent = true) {
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildInvites,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
   ];
   if (withMembersIntent) {
     intents.push(GatewayIntentBits.GuildMembers);
@@ -413,6 +491,7 @@ function initBot(withMembersIntent = true) {
 
   const client = new Client({ intents });
   const invitesCache = new Map();
+  const tempVoiceChannels = new Map(); // channelId => { ownerId, createdAt }
 
   client.on('error', (err) => {
     console.error('❌ Discord Client Error:', err.message);
@@ -576,6 +655,85 @@ function initBot(withMembersIntent = true) {
     }
   });
 
+  // 🔊 Dynamic Join-to-Create Voice Room Handler
+  client.on('voiceStateUpdate', async (oldState, newState) => {
+    const config = loadConfig();
+    const jtcId = config.joinToCreateChannelId || '1569447343584190466';
+    const voiceCatId = config.voiceCategoryId || '1569426287561285642';
+
+    // 1. User joined the "➕・Join to Create" voice channel
+    if (newState.channelId === jtcId && newState.member) {
+      try {
+        const member = newState.member;
+        const cleanName = member.displayName.replace(/[^a-zA-Z0-9\u0600-\u06FF ]/g, '').trim().slice(0, 15) || member.user.username.slice(0, 15);
+        const parentId = newState.channel?.parentId || voiceCatId;
+
+        const tempChannel = await newState.guild.channels.create({
+          name: `🔊・${cleanName}'s Room`,
+          type: ChannelType.GuildVoice,
+          parent: parentId,
+          permissionOverwrites: [
+            {
+              id: newState.guild.roles.everyone.id,
+              allow: [
+                PermissionFlagsBits.ViewChannel,
+                PermissionFlagsBits.Connect,
+                PermissionFlagsBits.Speak,
+              ],
+            },
+            {
+              id: member.id,
+              allow: [
+                PermissionFlagsBits.ViewChannel,
+                PermissionFlagsBits.Connect,
+                PermissionFlagsBits.Speak,
+                PermissionFlagsBits.ManageChannels,
+                PermissionFlagsBits.MoveMembers,
+                PermissionFlagsBits.MuteMembers,
+                PermissionFlagsBits.DeafenMembers,
+              ],
+            },
+            {
+              id: client.user.id,
+              allow: [
+                PermissionFlagsBits.ViewChannel,
+                PermissionFlagsBits.Connect,
+                PermissionFlagsBits.ManageChannels,
+                PermissionFlagsBits.MoveMembers,
+              ],
+            },
+          ],
+        });
+
+        tempVoiceChannels.set(tempChannel.id, {
+          ownerId: member.id,
+          createdAt: Date.now(),
+        });
+
+        // Move member into their newly created temporary channel
+        await newState.setChannel(tempChannel);
+
+        // Send the interactive control panel in the voice channel's text chat
+        await tempChannel.send(createVoiceControlPanel(member)).catch(() => {});
+      } catch (err) {
+        console.error('Error creating dynamic voice room:', err.message);
+      }
+    }
+
+    // 2. User left a channel -> check if it's a temporary room that became empty
+    if (oldState.channelId && oldState.channelId !== jtcId) {
+      if (tempVoiceChannels.has(oldState.channelId)) {
+        const channel = oldState.channel;
+        if (channel && channel.members.size === 0) {
+          tempVoiceChannels.delete(oldState.channelId);
+          setTimeout(() => {
+            channel.delete().catch(() => {});
+          }, 1000);
+        }
+      }
+    }
+  });
+
   // Interaction Handler (Buttons, Modals, Slash Commands)
   client.on('interactionCreate', async (interaction) => {
     const config = loadConfig();
@@ -656,6 +814,119 @@ function initBot(withMembersIntent = true) {
         } catch (err) {
           return interaction.reply({
             content: `❌ **Cannot modify role:** Ensure the bot role is placed above ${role.name} in Server Settings ➔ Roles.`,
+            flags: 64,
+          });
+        }
+      }
+
+      // 🌐 INTERNATIONAL LANGUAGE ROLES TOGGLE
+      if (interaction.customId.startsWith('lang_')) {
+        const langKey = interaction.customId.replace('lang_', '');
+        const langConfigPath = path.join(__dirname, 'languages_config.json');
+        let langConfig = {};
+        try {
+          langConfig = JSON.parse(fs.readFileSync(langConfigPath, 'utf8'));
+        } catch {}
+
+        const roleId = langConfig.roles?.[langKey];
+        const channelId = langConfig.channels?.[langKey];
+
+        if (!roleId) {
+          return interaction.reply({ content: '❌ Language role is not configured.', flags: 64 });
+        }
+
+        const role = interaction.guild.roles.cache.get(roleId);
+        if (!role) {
+          return interaction.reply({ content: '❌ Role not found in server.', flags: 64 });
+        }
+
+        try {
+          if (member.roles.cache.has(roleId)) {
+            await member.roles.remove(roleId);
+            return interaction.reply({
+              content: `🔴 **Removed:** ${role.name}\nYou will no longer see ${channelId ? `<#${channelId}>` : 'the language chat'}.`,
+              flags: 64,
+            });
+          } else {
+            await member.roles.add(roleId);
+            return interaction.reply({
+              content: `🟢 **Unlocked:** ${role.name}!\nYou can now access and chat in ${channelId ? `<#${channelId}>` : 'your language channel'}.`,
+              flags: 64,
+            });
+          }
+        } catch (err) {
+          return interaction.reply({
+            content: `❌ **Cannot modify role:** Ensure the bot role is placed above ${role.name} in Server Settings ➔ Roles.`,
+            flags: 64,
+          });
+        }
+      }
+
+      // 🔊 DYNAMIC VOICE CONTROLS
+      if (interaction.customId.startsWith('vcontrol_')) {
+        const voiceChannel = interaction.member.voice?.channel;
+        if (!voiceChannel || !tempVoiceChannels.has(voiceChannel.id)) {
+          return interaction.reply({
+            content: '❌ You must be actively connected inside your temporary voice room to use these controls.',
+            flags: 64,
+          });
+        }
+
+        const roomData = tempVoiceChannels.get(voiceChannel.id);
+        const isOwner =
+          roomData?.ownerId === interaction.member.id ||
+          interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isOwner) {
+          return interaction.reply({
+            content: `❌ Only the room owner (<@${roomData?.ownerId}>) can modify this voice channel.`,
+            flags: 64,
+          });
+        }
+
+        if (interaction.customId === 'vcontrol_lock') {
+          await voiceChannel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+            Connect: false,
+          });
+          return interaction.reply({
+            content: '🔒 **Room Locked!** Other members can no longer join unless invited.',
+            flags: 64,
+          });
+        }
+
+        if (interaction.customId === 'vcontrol_unlock') {
+          await voiceChannel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
+            Connect: true,
+          });
+          return interaction.reply({
+            content: '🔓 **Room Unlocked!** Anyone can now join.',
+            flags: 64,
+          });
+        }
+
+        if (interaction.customId === 'vcontrol_rename') {
+          const modal = new ModalBuilder()
+            .setCustomId('modal_voice_rename')
+            .setTitle('Rename Voice Room');
+
+          const nameInput = new TextInputBuilder()
+            .setCustomId('room_name')
+            .setLabel('New Room Name')
+            .setStyle(TextInputStyle.Short)
+            .setPlaceholder('e.g. Duo Hunting, Squad Chill')
+            .setRequired(true)
+            .setMaxLength(30);
+
+          modal.addComponents(new ActionRowBuilder().addComponents(nameInput));
+          return interaction.showModal(modal);
+        }
+
+        const limitMatch = interaction.customId.match(/^vcontrol_limit_(\d+)$/);
+        if (limitMatch) {
+          const limit = parseInt(limitMatch[1], 10);
+          await voiceChannel.setUserLimit(limit);
+          return interaction.reply({
+            content: `👥 Room capacity set to **${limit === 0 ? 'Unlimited' : limit + ' players'}**.`,
             flags: 64,
           });
         }
@@ -973,6 +1244,22 @@ function initBot(withMembersIntent = true) {
           });
         }
       }
+
+      if (interaction.customId === 'modal_voice_rename') {
+        const newName = interaction.fields.getTextInputValue('room_name').trim();
+        const voiceChannel = interaction.member.voice?.channel;
+        if (!voiceChannel || !tempVoiceChannels.has(voiceChannel.id)) {
+          return interaction.reply({
+            content: '❌ Voice room not found or you have disconnected.',
+            flags: 64,
+          });
+        }
+        await voiceChannel.setName(`🔊・${newName}`.slice(0, 32));
+        return interaction.reply({
+          content: `✅ Room renamed to **🔊・${newName}**!`,
+          flags: 64,
+        });
+      }
     }
 
     // ⚡ Slash Commands
@@ -1032,9 +1319,11 @@ function initBot(withMembersIntent = true) {
 
       else if (commandName === 'send-roles') {
         const rolesPayload = createRolesPanel(interaction.guild);
+        const langPayload = createLanguagesPanel(interaction.guild);
         await interaction.channel.send(rolesPayload);
+        await interaction.channel.send(langPayload);
         await interaction.reply({
-          content: '✅ Self-roles panel successfully deployed to this channel!',
+          content: '✅ Self-roles and International Language Selection panels successfully deployed!',
           flags: 64,
         });
       }
