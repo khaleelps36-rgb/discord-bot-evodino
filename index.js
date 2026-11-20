@@ -529,9 +529,19 @@ function initBot(withMembersIntent = true) {
     }
 
     try {
-      console.log('⏳ Registering global slash commands...');
-      await client.application.commands.set(commands);
-      console.log('✅ Slash commands successfully registered!');
+      if (client.guilds.cache.size > 0) {
+        console.log('⏳ Registering guild slash commands for instant propagation...');
+        for (const guild of client.guilds.cache.values()) {
+          await guild.commands.set(commands);
+          console.log(`✅ Guild slash commands registered for [${guild.name}] (${guild.id})`);
+        }
+        await client.application.commands.set([]);
+        console.log('✅ Cleared global slash commands to prevent duplicates!');
+      } else {
+        console.log('⏳ Registering global slash commands...');
+        await client.application.commands.set(commands);
+        console.log('✅ Global slash commands registered!');
+      }
     } catch (err) {
       console.error('❌ Error registering slash commands:', err.message);
     }
