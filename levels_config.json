@@ -1,0 +1,65 @@
+{
+  "ranksChannelId": "1573264097628266526",
+  "leaderboardChannelId": "1573264099020636291",
+  "leaderboardMessageId": "1573264107115905171",
+  "levelDbChannelId": "1573264100430184518",
+  "textRoles": [
+    {
+      "level": 1,
+      "roleId": "1573263604239696003",
+      "name": "Chatter I"
+    },
+    {
+      "level": 5,
+      "roleId": "1573263603086270474",
+      "name": "Chatter II"
+    },
+    {
+      "level": 10,
+      "roleId": "1573263601630847017",
+      "name": "Chatter III"
+    },
+    {
+      "level": 20,
+      "roleId": "1573263600296927282",
+      "name": "Active Veteran"
+    },
+    {
+      "level": 35,
+      "roleId": "1573263598740963358",
+      "name": "Chat Legend"
+    },
+    {
+      "level": 50,
+      "roleId": "1573263596933353492",
+      "name": "Apex Chatter"
+    }
+  ],
+  "voiceRoles": [
+    {
+      "level": 1,
+      "roleId": "1573263611839909888",
+      "name": "Voice I"
+    },
+    {
+      "level": 5,
+      "roleId": "1573263609633701918",
+      "name": "Voice II"
+    },
+    {
+      "level": 10,
+      "roleId": "1573263608350113822",
+      "name": "Voice III"
+    },
+    {
+      "level": 20,
+      "roleId": "1573263606701756458",
+      "name": "Voice Master"
+    },
+    {
+      "level": 35,
+      "roleId": "1573263605250658387",
+      "name": "Voice Legend"
+    }
+  ]
+}

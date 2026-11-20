@@ -18,6 +18,7 @@ const path = require('path');
 const fs = require('fs');
 const http = require('http');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+const { levelingCommands, createLevelingSystem } = require('./leveling');
 
 // Error handling to prevent crashes
 process.on('unhandledRejection', (reason) => {
@@ -160,6 +161,8 @@ const commands = [
       opt.setName('reason').setDescription('Reason for kick').setRequired(false)
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers),
+
+  ...levelingCommands,
 ];
 
 // Aesthetic Welcome Card Generator
@@ -492,6 +495,13 @@ function initBot(withMembersIntent = true) {
   const client = new Client({ intents });
   const invitesCache = new Map();
   const tempVoiceChannels = new Map(); // channelId => { ownerId, createdAt }
+  const leveling = createLevelingSystem(client, { loadConfig });
+  leveling.registerEvents();
+
+  process.once('SIGTERM', async () => {
+    await leveling.syncToDiscord(true).catch(() => {});
+    process.exit(0);
+  });
 
   client.on('error', (err) => {
     console.error('❌ Discord Client Error:', err.message);
@@ -737,6 +747,16 @@ function initBot(withMembersIntent = true) {
   // Interaction Handler (Buttons, Modals, Slash Commands)
   client.on('interactionCreate', async (interaction) => {
     const config = loadConfig();
+
+    try {
+      if (await leveling.handleInteraction(interaction)) return;
+    } catch (lvlErr) {
+      console.error('Leveling interaction error:', lvlErr.message);
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({ content: `❌ Leveling error: ${lvlErr.message}`, flags: 64 }).catch(() => {});
+      }
+      return;
+    }
 
     // 🔘 Button Interactions
     if (interaction.isButton()) {
@@ -1424,6 +1444,7 @@ function initBot(withMembersIntent = true) {
           .setTitle(`🦖 ${interaction.guild.name} • Command Guide`)
           .setDescription('List of available bot slash commands:')
           .addFields(
+            { name: '📈 Levels & Ranks', value: '`/rank` • `/leaderboard` • `/send-leaderboard` • `/setxp`' },
             { name: '🎟️ Support Tickets', value: '`/send-tickets` • `/close`' },
             { name: '👋 Welcome & Roles', value: '`/testwelcome` • `/setwelcome` • `/send-roles` • `/setautorole`' },
             { name: '📊 Statistics & Info', value: '`/invites` • `/serverinfo` • `/userinfo` • `/ping`' },
